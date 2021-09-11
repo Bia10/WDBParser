@@ -44,9 +44,21 @@ namespace WDBParser
 
                 ++recordIndex;
 
-                Console.WriteLine($"Game object entry Id: {entryId} Size: {size} bytes at index: {recordIndex}");
+                Console.WriteLine($"Game object entry Id: {entryId} Size: {size} bytes at Index: {recordIndex}");
 
                 var entryBytes = wdbStream.ReadBytes(size);
+                var entryStream = new BinaryReader(new MemoryStream(entryBytes));
+
+                int type = entryStream.ReadInt32();
+                int displayId = entryStream.ReadInt32();
+
+                const int sizeOfNamelessEntry = 139;
+                var sizeOfName = size - sizeOfNamelessEntry;
+                string name = Encoding.UTF8.GetString(entryStream.ReadBytes(sizeOfName));                            
+
+                Console.WriteLine("Type: " + type);
+                Console.WriteLine("DisplayId: " + displayId);
+                Console.WriteLine("Name: " + name);
             }
 
             Console.WriteLine("Total records in cache: " + recordIndex);
