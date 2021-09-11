@@ -31,6 +31,25 @@ namespace WDBParser
             Console.WriteLine("Client Build: " + clientBuild);
             Console.WriteLine("Record Size: " + recordSize);
             Console.WriteLine("Record Version: " + recordVersion);
+
+            int recordIndex = 0;
+
+            while (wdbStream.BaseStream.Position != wdbStream.BaseStream.Length)
+            {
+                var entryId = wdbStream.ReadInt32();
+                var size = wdbStream.ReadInt32();
+
+                if (entryId == 0 && size == 0)
+                    break;
+
+                ++recordIndex;
+
+                Console.WriteLine($"Game object entry Id: {entryId} Size: {size} bytes at index: {recordIndex}");
+
+                var entryBytes = wdbStream.ReadBytes(size);
+            }
+
+            Console.WriteLine("Total records in cache: " + recordIndex);
         }
     }
 }
